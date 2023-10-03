@@ -1,0 +1,16 @@
+{% extends 'padre.html' %}
+
+
+{% block contenidoQueCambia %} 
+
+<ul>
+        
+    {% for curso in lista_cursos %}
+        <li>{{curso.nombre}} - {{curso.camada}}</li>
+    {% endfor %}
+    <button> <a href="{% url 'CursoFormulario' %}"> Agregar Curso </a></button>
+    <button> <a href="{% url 'BusquedaCamada' %}"> Buscar Curso por camada </a></button>
+
+</ul>
+{% endblock contenidoQueCambia %}
+

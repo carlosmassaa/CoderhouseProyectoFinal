@@ -1,0 +1,20 @@
+{% extends 'padre.html' %}
+
+
+{% block contenidoQueCambia %} 
+    <p>Resultados de la busqueda del curso</p>
+
+    
+    {% if cursos %}        
+        <ul>                
+                {% for curso in cursos %}
+                    <li>{{curso}}</li>
+                {% endfor %}
+        </ul>
+    {% endif %}
+    <button> <a href="{% url 'ListaCursos' %}"> Volver a la lista de cursos </a></button>
+    <button> <a href="{% url 'BusquedaCamada' %}"> Buscar otro curso por camada </a></button>
+        
+
+{% endblock contenidoQueCambia %}
+

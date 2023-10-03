@@ -1,0 +1,14 @@
+{% extends 'padre.html' %}
+
+
+{% block contenidoQueCambia %} 
+<ul>
+        
+    {% for estudiante in lista_estudiante %}
+        <li>{{estudiante.nombre}} - {{estudiante.apellido}} - {{estudiante.email}}</li>
+    {% endfor %}
+    <button> <a href="{% url 'EstudiantesFormulario' %}"> Agregar estudiante </a></button>
+
+</ul>
+{% endblock contenidoQueCambia %}
+
