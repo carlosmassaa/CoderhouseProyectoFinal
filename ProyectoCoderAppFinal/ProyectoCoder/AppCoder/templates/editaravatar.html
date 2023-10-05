@@ -1,0 +1,12 @@
+{% extends 'padre.html' %}
+
+{% block contenidoQueCambia %} 
+<h2>Editar Avatar</h2>
+
+<form action="{% url 'EditarAvatar' %}" enctype="multipart/form-data" method="post">
+  {% csrf_token %}
+  {{ miFormulario.as_p }}
+  <button type="submit">Actualizar Avatar</button>
+</form>
+
+{% endblock contenidoQueCambia %}

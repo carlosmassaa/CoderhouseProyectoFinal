@@ -1,0 +1,21 @@
+{% extends 'padre.html' %}
+
+{% block contenidoQueCambia %}
+<h1>Detalle de Inmueble</h1>
+<h2>{{ inmueble.nombre }}</h2>
+<p>Ubicación: {{ inmueble.ubicacion }}</p>
+<p>Descripción: {{ inmueble.descripcion }}</p>
+<img src="{{ inmueble.foto.url }}" alt="{{ inmueble.nombre }}" width="200">
+
+{% if user.is_authenticated and user.userprofile.tipo_de_usuario == 'comprador' %}
+  <h3>Agregar Comentario</h3>
+  <form method="post" action="{% url 'AgregarComentario' inmueble.id %}">
+    {% csrf_token %}
+    <textarea name="texto" rows="4" cols="50" required></textarea><br>
+    <input type="submit" value="Agregar Comentario">
+  </form>
+{% endif %}
+
+<!-- Mostrar comentarios existentes aquí -->
+
+{% endblock contenidoQueCambia %}

@@ -1,0 +1,10 @@
+{% extends 'padre.html' %}
+
+{% block contenidoQueCambia %}
+<h1>Agregar Inmueble</h1>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ miFormulario.as_p }}
+  <button type="submit">Guardar</button>
+</form>
+{% endblock contenidoQueCambia %}

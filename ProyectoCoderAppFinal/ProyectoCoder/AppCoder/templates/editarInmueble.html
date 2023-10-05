@@ -1,7 +1,8 @@
 {% extends 'padre.html' %}
 
-{% block contenidoQueCambia %} 
-<form action="{% url 'editar_perfil' %}" method="post">
+{% block contenidoQueCambia %}
+<h1>Editar Inmueble</h1>
+<form method="post" enctype="multipart/form-data">
   {% csrf_token %}
   {{ miFormulario.as_p }}
   <button type="submit">Actualizar</button>

@@ -1,6 +1,8 @@
 from django.contrib import admin
-from.models import Curso, Profesores, Estudiantes, Entregable, Avatar
+from django.contrib.auth.admin import UserAdmin
+from .models import Curso, Profesores, Estudiantes, Entregable, Avatar, Inmueble, UserProfile
 from datetime import datetime
+
 
 class CursoAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'camada', 'fecha_creacion', 'antiguedad']
@@ -12,10 +14,11 @@ class CursoAdmin(admin.ModelAdmin):
         if object.fecha_creacion:
             return (datetime.now().date() - object.fecha_creacion).days
 
-
-# Register your models here.
 admin.site.register(Curso, CursoAdmin)
 admin.site.register(Profesores)
 admin.site.register(Estudiantes)
 admin.site.register(Entregable)
 admin.site.register(Avatar)
+admin.site.register(Inmueble)
+admin.site.register(UserProfile)
+

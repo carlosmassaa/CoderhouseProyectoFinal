@@ -1,0 +1,30 @@
+{% extends 'padre.html' %}
+
+{% block contenidoQueCambia %}
+<h1>Lista de Inmuebles</h1>
+<div class="inmuebles-container">
+  {% for inmueble in lista_inmuebles %}
+    <div class="inmueble-card">
+      <a href="{% url 'DetalleInmueble' inmueble.id %}">
+        <img src="{{ inmueble.foto.url }}" alt="{{ inmueble.nombre }}" width="200">
+        <h2>{{ inmueble.nombre }}</h2>
+      </a>
+      <p>{{ inmueble.ubicacion }}</p>
+      {% if user.is_authenticated and user.is_staff %}
+        <div style="display: flex; justify-content: space-between;">
+          <button><a href="{% url 'EditarInmueble' inmueble.id %}">Editar</a></button>
+          <form action="{% url 'EliminarInmueble' inmueble.id %}" method="post">{% csrf_token %}
+            <button type="submit">Eliminar</button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+{% if user.is_authenticated %}
+  {% if user.userprofile.tipo_de_usuario == 'vendedor' or user.is_staff %}
+    <button><a href="{% url 'InmueblesFormulario' %}">Agregar Inmueble</a></button>
+  {% endif %}
+{% endif %}
+
+{% endblock contenidoQueCambia %}

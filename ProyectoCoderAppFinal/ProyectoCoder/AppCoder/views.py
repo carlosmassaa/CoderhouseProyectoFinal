@@ -1,15 +1,17 @@
-from django.shortcuts import render
-from .models import Curso, Profesores, Estudiantes, Avatar
+from django.shortcuts import render, redirect
+from .models import Curso, Profesores, Estudiantes, Avatar, Inmueble, UserProfile, Comentario
 from django.http import HttpResponse, HttpRequest
-from .forms import CursoFormulario, ProfesoresFormulario, EstudiantesFormulario, UserEditForm, AvatarFormulario
+from .forms import CursoFormulario, ProfesoresFormulario, EstudiantesFormulario, UserEditForm, AvatarFormulario,InmuebleFormulario, TipoUsuarioForm
+
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, UpdateView, CreateView
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import Http404
 
 # Create your views here.
 def curso (req, nombre, camada):
@@ -256,23 +258,143 @@ def editar_perfil(req):
         miFormulario = UserEditForm(instance=usuario)
         return render(req, "editarperfil.html", {"miFormulario": miFormulario})
 
-def agregar_avatar(req)    :
-    
-    if req.method == 'POST':
-        
-        miFormulario = AvatarFormulario(req.POST, req.FILES) 
-        
-        if miFormulario.is_valid():
-                
-                
+def editar_avatar(request):
+    if request.user.is_authenticated:
+        try:
+            avatar = Avatar.objects.get(user=request.user)
+        except Avatar.DoesNotExist:
+            avatar = None
+
+        if request.method == 'POST':
+            miFormulario = AvatarFormulario(request.POST, request.FILES, instance=avatar)
+            if miFormulario.is_valid():
                 data = miFormulario.cleaned_data
-                avatar = Avatar(user=req.user, imagen=data["imagen"])
+                if avatar is None:
+                    avatar = Avatar(user=request.user, imagen=data["imagen"])
+                else:
+                    avatar.imagen = data["imagen"]
                 avatar.save()
-                
-                return render(req, "inicio.html", {"mensaje": "Avatar actualizado con éxito!"})
-        else:    
+                return render(request, "inicio.html", {"mensaje": "Avatar actualizado con éxito!"})
+            else:
+                return render(request, "editaravatar.html", {"miFormulario": miFormulario})
+        else:
+            miFormulario = AvatarFormulario(instance=avatar)
+            return render(request, "editaravatar.html", {"miFormulario": miFormulario})
+    else:
+        return redirect('login')  
+
+
+
+
+def agregar_avatar(req):
+    if req.method == 'POST':
+        miFormulario = AvatarFormulario(req.POST, req.FILES)
+        if miFormulario.is_valid():
+            data = miFormulario.cleaned_data
+            avatar = Avatar(user=req.user, imagen=data["imagen"])
+            avatar.save()
+            return render(req, "inicio.html", {"mensaje": "Avatar actualizado con éxito!"})
+        else:
             return render(req, "editarperfil.html", {"miFormulario": miFormulario})
     else:
-        
-        miFormulario = AvatarFormulario(instance=avatar)
+        # En el caso de una solicitud GET, simplemente crea una instancia del formulario vacío
+        miFormulario = AvatarFormulario()
         return render(req, "agregarAvatar.html", {"miFormulario": miFormulario})
+
+
+
+
+
+
+
+
+def listar_inmuebles(req):
+    lista = Inmueble.objects.all()
+    return render(req, "lista_inmuebles.html", {"lista_inmuebles": lista})
+
+@staff_member_required(login_url='/app-coder/login')
+def eliminar_inmueble(req, id):
+    if req.method == 'POST':
+        inmueble = Inmueble.objects.get(id=id)
+        inmueble.delete()
+        return redirect('ListaInmuebles')
+
+@staff_member_required(login_url='/app-coder/login')
+def editar_inmueble(req, id):
+    inmueble = Inmueble.objects.get(id=id)
+    if req.method == 'POST':
+        miFormulario = InmuebleFormulario(req.POST, req.FILES, instance=inmueble)
+        if miFormulario.is_valid():
+            miFormulario.save()
+            return redirect('ListaInmuebles')
+    else:
+        miFormulario = InmuebleFormulario(instance=inmueble)
+    return render(req, "editarInmueble.html", {"miFormulario": miFormulario, "id": inmueble.id})
+
+def inmuebles(req):
+    return render(req, "inmuebles.html")
+
+
+def es_vendedor_o_staff(user):
+    return user.userprofile.tipo_de_usuario == 'vendedor' or user.is_staff
+
+
+@login_required(login_url='/app-coder/login')
+@user_passes_test(es_vendedor_o_staff, login_url='/app-coder/login')
+def inmuebles_formulario(req):
+    if req.method == 'POST':
+        miFormulario = InmuebleFormulario(req.POST, req.FILES)
+        if miFormulario.is_valid():
+            miFormulario.save()
+            return redirect('ListaInmuebles')
+    else:
+        miFormulario = InmuebleFormulario()
+    return render(req, "inmueblesFormulario.html", {"miFormulario": miFormulario})
+
+
+
+
+def detalle_inmueble(request, id):
+    try:
+        inmueble = Inmueble.objects.get(id=id)
+    except Inmueble.DoesNotExist:
+        raise Http404("El inmueble no existe")  # Puedes personalizar este mensaje
+    return render(request, 'detalle_inmueble.html', {'inmueble': inmueble})
+
+
+ 
+
+def agregar_comentario(req, inmueble_id):
+    if req.user.is_authenticated and req.user.userprofile.tipo_de_usuario == 'comprador':
+        if req.method == 'POST':
+            texto = req.POST.get('texto', '')
+            inmueble = Inmueble.objects.get(pk=inmueble_id)
+            comentario = Comentario(usuario=req.user, inmueble=inmueble, texto=texto)
+            comentario.save()
+        return redirect('DetalleInmueble', inmueble_id=inmueble_id)
+    else:
+        return redirect('login')
+
+
+
+
+
+
+
+
+
+
+
+@login_required
+def editar_tipo_usuario(request):
+    usuario_perfil, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        form = TipoUsuarioForm(request.POST, instance=usuario_perfil)
+        if form.is_valid():
+            form.save()
+            return render(request, "inicio.html", {"mensaje": "Tipo de usuario actualizado con éxito!"})
+    else:
+        form = TipoUsuarioForm(instance=usuario_perfil)
+    
+    return render(request, "editartipousuario.html", {"form": form})

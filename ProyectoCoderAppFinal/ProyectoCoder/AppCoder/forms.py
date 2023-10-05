@@ -1,7 +1,9 @@
 from django import forms
-from .models import Profesores, Estudiantes, Curso, Avatar
-from django.contrib.auth.forms import UserChangeForm
+from .models import Profesores, Estudiantes, Curso, Avatar, Inmueble, UserProfile
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.models import User
+from .models import User  
+
 
 class CursoFormulario(forms.ModelForm):
     class Meta:
@@ -20,6 +22,7 @@ class EstudiantesFormulario(forms.ModelForm):
     class Meta:
         model = Estudiantes
         fields = ['nombre', 'apellido', 'email']
+
 
 class UserEditForm(UserChangeForm):
     
@@ -44,8 +47,30 @@ class UserEditForm(UserChangeForm):
             raise forms.ValidationError("Las contraseñas no coinciden")        
         return password2
 
+
 class AvatarFormulario(forms.ModelForm):
     
     class Meta:
         model = Avatar
         fields = ("imagen", )
+        
+
+class InmuebleFormulario(forms.ModelForm):
+    class Meta:
+        model = Inmueble
+        fields = ['nombre', 'ubicacion', 'descripcion', 'foto']
+        
+        
+        
+
+
+class TipoUsuarioForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['tipo_de_usuario']
+        
+        
+        
+
+
+

@@ -1,0 +1,12 @@
+{% extends 'padre.html' %}
+
+{% block contenidoQueCambia %}
+<h2>Editar Tipo de Usuario</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Actualizar Tipo de Usuario</button>
+</form>
+
+{% endblock contenidoQueCambia %}
