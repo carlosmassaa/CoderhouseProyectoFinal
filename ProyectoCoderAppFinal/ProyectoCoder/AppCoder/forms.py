@@ -58,8 +58,8 @@ class AvatarFormulario(forms.ModelForm):
 class InmuebleFormulario(forms.ModelForm):
     class Meta:
         model = Inmueble
-        fields = ['nombre', 'ubicacion', 'descripcion', 'foto']
-        
+        fields = ['nombre', 'ubicacion', 'descripcion', 'foto', 'precio', 'ciudad']
+
         
         
 

@@ -2,6 +2,24 @@
 
 {% block contenidoQueCambia %}
 <h1>Lista de Inmuebles</h1>
+
+<!-- Agrega un formulario para los filtros -->
+<form id="filtro-form" method="GET">
+  <label for="ciudad">Ciudad:</label>
+  <select id="ciudad" name="ciudad">
+    <option value="">Todas</option>
+    <!-- Aquí puedes generar opciones para ciudades basadas en tus inmuebles -->
+    {% for inmueble in lista_inmuebles %}
+      <option value="{{ inmueble.ciudad }}">{{ inmueble.ciudad }}</option>
+    {% endfor %}
+  </select>
+  <label for="precio_min">Precio Mínimo:</label>
+  <input type="number" id="precio_min" name="precio_min" min="0">
+  <label for="precio_max">Precio Máximo:</label>
+  <input type="number" id="precio_max" name="precio_max" min="0">
+  <button type="submit">Filtrar</button>
+</form>
+
 <div class="inmuebles-container">
   {% for inmueble in lista_inmuebles %}
     <div class="inmueble-card">
@@ -10,6 +28,8 @@
         <h2>{{ inmueble.nombre }}</h2>
       </a>
       <p>{{ inmueble.ubicacion }}</p>
+      <p>Ciudad: {{ inmueble.ciudad }}</p>
+      <p>Precio: ${{ inmueble.precio }}</p>
       {% if user.is_authenticated and user.is_staff %}
         <div style="display: flex; justify-content: space-between;">
           <button><a href="{% url 'EditarInmueble' inmueble.id %}">Editar</a></button>

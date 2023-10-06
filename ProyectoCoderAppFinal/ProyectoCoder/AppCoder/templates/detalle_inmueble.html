@@ -4,6 +4,8 @@
 <h1>Detalle de Inmueble</h1>
 <h2>{{ inmueble.nombre }}</h2>
 <p>Ubicación: {{ inmueble.ubicacion }}</p>
+<p>Ciudad: {{ inmueble.ciudad }}</p>  <!-- Agrega la información de la ciudad -->
+<p>Precio: ${{ inmueble.precio }}</p>  <!-- Agrega la información del precio -->
 <p>Descripción: {{ inmueble.descripcion }}</p>
 <img src="{{ inmueble.foto.url }}" alt="{{ inmueble.nombre }}" width="200">
 

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Curso, Profesores, Estudiantes, Avatar, Inmueble, UserProfile, Comentario
 from django.http import HttpResponse, HttpRequest
 from .forms import CursoFormulario, ProfesoresFormulario, EstudiantesFormulario, UserEditForm, AvatarFormulario,InmuebleFormulario, TipoUsuarioForm
-
+from django.db.models import Q
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, UpdateView, CreateView
@@ -362,6 +362,7 @@ def detalle_inmueble(request, id):
     return render(request, 'detalle_inmueble.html', {'inmueble': inmueble})
 
 
+
  
 
 def agregar_comentario(req, id): 
@@ -374,16 +375,6 @@ def agregar_comentario(req, id):
         return redirect('DetalleInmueble', id=id)  
     else:
         return redirect('login')
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -400,3 +391,27 @@ def editar_tipo_usuario(request):
         form = TipoUsuarioForm(instance=usuario_perfil)
     
     return render(request, "editartipousuario.html", {"form": form})
+
+
+
+
+
+
+
+
+
+def listar_inmuebles(request):
+    lista_inmuebles = Inmueble.objects.all()
+    
+    # Filtrar por ciudad si se ha seleccionado una
+    ciudad = request.GET.get('ciudad')
+    if ciudad:
+        lista_inmuebles = lista_inmuebles.filter(ciudad=ciudad)
+    
+    # Filtrar por rango de precio si se han proporcionado valores
+    precio_min = request.GET.get('precio_min')
+    precio_max = request.GET.get('precio_max')
+    if precio_min and precio_max:
+        lista_inmuebles = lista_inmuebles.filter(precio__range=(precio_min, precio_max))
+    
+    return render(request, 'lista_inmuebles.html', {'lista_inmuebles': lista_inmuebles})

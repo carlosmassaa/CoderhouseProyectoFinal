@@ -54,6 +54,13 @@ class Inmueble(models.Model):
     descripcion = models.TextField()
     foto = models.ImageField(upload_to='inmuebles/')
     comentarios = models.ManyToManyField(User, through='Comentario')
+    precio = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Establece 0 como valor predeterminado
+    ciudad = models.CharField(max_length=100, default='Desconocida') 
+
+    def __str__(self):
+        return self.nombre
+
+
 
 
     def __str__(self):
