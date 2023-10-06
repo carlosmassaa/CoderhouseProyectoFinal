@@ -17,5 +17,15 @@
 {% endif %}
 
 <!-- Mostrar comentarios existentes aquí -->
+<h3>Comentarios existentes:</h3>
+<ul>
+  {% for comentario in inmueble.comentario_set.all %}
+    <li>
+      <strong>{{ comentario.usuario.username }}</strong>: {{ comentario.texto }}
+    </li>
+  {% empty %}
+    <li>No hay comentarios.</li>
+  {% endfor %}
+</ul>
 
 {% endblock contenidoQueCambia %}

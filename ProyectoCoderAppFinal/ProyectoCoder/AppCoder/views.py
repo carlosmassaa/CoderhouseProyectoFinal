@@ -364,16 +364,18 @@ def detalle_inmueble(request, id):
 
  
 
-def agregar_comentario(req, inmueble_id):
+def agregar_comentario(req, id): 
     if req.user.is_authenticated and req.user.userprofile.tipo_de_usuario == 'comprador':
         if req.method == 'POST':
             texto = req.POST.get('texto', '')
-            inmueble = Inmueble.objects.get(pk=inmueble_id)
+            inmueble = Inmueble.objects.get(pk=id)
             comentario = Comentario(usuario=req.user, inmueble=inmueble, texto=texto)
             comentario.save()
-        return redirect('DetalleInmueble', inmueble_id=inmueble_id)
+        return redirect('DetalleInmueble', id=id)  
     else:
         return redirect('login')
+
+
 
 
 
