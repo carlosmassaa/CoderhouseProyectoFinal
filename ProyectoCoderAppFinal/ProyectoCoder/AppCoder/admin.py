@@ -22,3 +22,4 @@ admin.site.register(Avatar)
 admin.site.register(Inmueble)
 admin.site.register(UserProfile)
 
+

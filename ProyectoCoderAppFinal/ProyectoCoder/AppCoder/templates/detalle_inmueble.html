@@ -24,7 +24,13 @@
   {% for comentario in inmueble.comentario_set.all %}
     <li>
       <strong>{{ comentario.usuario.username }}</strong>: {{ comentario.texto }}
+      {% if user.is_authenticated and user.userprofile.tipo_de_usuario == 'vendedor' or user.is_staff %}
+      <br>Correo electrónico: {{ comentario.usuario.email }}
+      <br>
+      <br>
+    {% endif %}
     </li>
+   
   {% empty %}
     <li>No hay comentarios.</li>
   {% endfor %}

@@ -34,6 +34,7 @@ urlpatterns = [
     path('editar_perfil/', views.editar_perfil, name='editar_perfil'),
     path('editar-tipo-usuario/', views.editar_tipo_usuario, name='EditarTipoUsuario'),
     path('agregar-comentario/<int:id>/', agregar_comentario, name='AgregarComentario'),
+    path('acercademi/', views.acerca_de_mi, name='AcercaDeMi'),
 
 
 

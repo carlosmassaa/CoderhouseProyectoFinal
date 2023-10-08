@@ -415,3 +415,9 @@ def listar_inmuebles(request):
         lista_inmuebles = lista_inmuebles.filter(precio__range=(precio_min, precio_max))
     
     return render(request, 'lista_inmuebles.html', {'lista_inmuebles': lista_inmuebles})
+
+
+from django.shortcuts import render
+
+def acerca_de_mi(request):
+    return render(request, 'acercademi.html')

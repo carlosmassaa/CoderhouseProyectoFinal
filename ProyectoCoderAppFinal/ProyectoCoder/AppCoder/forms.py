@@ -2,7 +2,7 @@ from django import forms
 from .models import Profesores, Estudiantes, Curso, Avatar, Inmueble, UserProfile
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.models import User
-from .models import User  
+from .models import User, UserProfile  
 
 
 class CursoFormulario(forms.ModelForm):

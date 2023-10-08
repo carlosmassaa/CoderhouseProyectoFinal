@@ -80,10 +80,10 @@ class UserProfile(models.Model):
     TIPOS_DE_USUARIO = (
         ('comprador', 'Comprador'),
         ('vendedor', 'Vendedor'),
-        ('admin', 'Admin'),
+        
     )
     tipo_de_usuario = models.CharField(max_length=20, choices=TIPOS_DE_USUARIO)
-
+    
     def __str__(self):
         return self.user.username
     
