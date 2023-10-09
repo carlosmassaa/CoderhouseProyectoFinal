@@ -1,0 +1,36 @@
+{% extends 'padre.html' %}
+
+
+{% block contenidoQueCambia %}
+
+<header>
+    <h1>Urls de la web</h1>
+</header>
+
+<section>
+    <p>
+        admin/<br>
+        app-coder/ [name='Inicio']<br>
+        app-coder/ login/ [name='Login']<br>
+        app-coder/ register/ [name='Registrar']<br>
+        app-coder/ logout/ [name='Logout']<br>
+        app-coder/ agregar-avatar/ [name='AgregarAvatar']<br>
+        app-coder/ editar-avatar/ [name='EditarAvatar']<br>
+        app-coder/ editar_perfil/ [name='editar_perfil']<br>
+        app-coder/ editar-tipo-usuario/ [name='EditarTipoUsuario']<br>
+        app-coder/ agregar-comentario/<int:id>/ [name='AgregarComentario']<br>
+        app-coder/ acercademi/ [name='AcercaDeMi']<br>
+        app-coder/ inmuebles/ [name='Inmuebles']<br>
+        app-coder/ inmuebles-formulario/ [name='InmueblesFormulario']<br>
+        app-coder/ lista-inmuebles/ [name='ListaInmuebles']<br>
+        app-coder/ eliminar-inmueble/<int:id> [name='EliminarInmueble']<br>
+        app-coder/ editar-inmueble/<int:id> [name='EditarInmueble']<br>
+        app-coder/ detalle_inmueble/<int:id>/ [name='DetalleInmueble']<br>
+        ^media/(?P<path>.*)$   
+        </p>
+</section>
+
+
+{% endblock contenidoQueCambia %}
+
+    

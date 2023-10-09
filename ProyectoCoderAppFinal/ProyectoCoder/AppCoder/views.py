@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Curso, Profesores, Estudiantes, Avatar, Inmueble, UserProfile, Comentario
+from .models import Avatar, Inmueble, UserProfile, Comentario
 from django.http import HttpResponse, HttpRequest
-from .forms import CursoFormulario, ProfesoresFormulario, EstudiantesFormulario, UserEditForm, AvatarFormulario,InmuebleFormulario, TipoUsuarioForm
+from .forms import UserEditForm, AvatarFormulario, InmuebleFormulario, TipoUsuarioForm
 from django.db.models import Q
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
@@ -13,19 +13,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import Http404
 
-# Create your views here.
-def curso (req, nombre, camada):
-    
-    curso = Curso(nombre=nombre, camada=camada)
-    curso.save()
-    
-    return HttpResponse(f""" <P> Curso: {curso.nombre} - Camada: {curso.camada} creado con éxito!<P>""")
 
-def listar_cursos(req):
 
-    lista = Curso.objects.all()
-    
-    return render(req, "lista_cursos.html", {"lista_cursos":lista})
+
 
 def inicio(req):
     
@@ -35,166 +25,10 @@ def inicio(req):
     except:
         return render(req, 'inicio.html')
 
-def cursos(req):
-    return render(req, 'cursos.html')
-    return HttpResponse("Vista de Cursos")
 
 
-def cursoFormulario(req):
-    
-    print('method', req.method)
-    print('method', req.POST)
-    if req.method == 'POST':
-        
-        miFormulario = CursoFormulario(req.POST)
-    
-        if miFormulario.is_valid():
-            
-            data = miFormulario.cleaned_data
-            curso = Curso(nombre=data["curso"], camada=data["camada"])
-            curso.save()
-            return render(req, "inicio.html")
-        
-    else:
-        miFormulario = CursoFormulario()
-        return render(req, "cursoFormulario.html", {"miFormulario": miFormulario})
-
-def busquedaCamada(req):
-    return render(req, "busquedaCamada.html")
-
-def buscar(req: HttpRequest):
-    
-    if req.GET["camada"]:
-        camada = req.GET["camada"]
-        cursos = Curso.objects.filter(camada__icontains=camada)
-        return render(req, "resultadosBusqueda.html", {'cursos': cursos})
-
-    else: 
-        return HttpResponse(f"Debe agregar una camada")
-        
         
 
-def profesores(req):
-    return render(req, 'profesores.html')
-    return HttpResponse("Vista de Profesores")
-
-
-from .forms import ProfesoresFormulario
-
-def profesoresFormulario(req):
-    if req.method == 'POST':
-        miFormulario = ProfesoresFormulario(req.POST)
-        if miFormulario.is_valid():
-            miFormulario.save()
-            return render(req, "inicio.html")
-    else:
-        miFormulario = ProfesoresFormulario()
-    return render(req, "profesoresFormulario.html", {"miFormulario": miFormulario})
-
-@staff_member_required(login_url='/app-coder/login')
-def listar_profesores(req):
-
-    lista = Profesores.objects.all()
-    
-    return render(req, "lista_profesores.html", {"lista_profesores":lista})
-
-
-def eliminar_profesor(req, id):
-    
-    if req.method == 'POST':
-        
-        profesores = Profesores.objects.get(id=id)
-        profesores.delete()
-        
-        profesores = Profesores.objects.all()
-        
-        return render(req, "lista_profesores.html", {"profesores": profesores})
-    
-def editar_profesor(req, id):     
-    profesores = Profesores.objects.get(id=id)
-    if req.method == 'POST':
-        miFormulario = ProfesoresFormulario(req.POST) 
-        if miFormulario.is_valid():
-                
-                data = miFormulario.cleaned_data
-                profesores.nombre = data["nombre"]
-                profesores.apellido = data["apellido"]
-                profesores.email = data["email"]
-                profesores.profesion = data["profesion"]
-                profesores.save()
-                
-                return render(req, "inicio.html")
-    else:
-        
-         miFormulario = ProfesoresFormulario(initial={
-        "nombre": profesores.nombre,
-        "apellido": profesores.apellido,                                                
-        "email": profesores.email,                                              
-        "profesion": profesores.profesion,
-         })
-         return render(req, "editarProfesor.html", {"miFormulario": miFormulario, "id":profesores.id})
-         
-
-
-
-def estudiantes(req):
-    return render(req, 'estudiantes.html')
-    return HttpResponse("Vista de Estudiantes")
-
-def listar_estudiantes(req):
-
-    lista = Estudiantes.objects.all()
-    
-    return render(req, "lista_estudiantes.html", {"lista_estudiante":lista})
-
-def estudiantesFormulario(req):
-    if req.method == 'POST':
-        miFormulario = EstudiantesFormulario(req.POST)
-        if miFormulario.is_valid():
-            miFormulario.save()
-            return render(req, "inicio.html")
-    else:
-        miFormulario = EstudiantesFormulario()
-    return render(req, "estudiantesFormulario.html", {"miFormulario": miFormulario})
-
-
-class CursoList(LoginRequiredMixin, ListView):
-    model = Curso
-    template_name = "curso_list.html"
-    context_object_name = "cursos"
-
-
-class CursoDetail(DetailView):
-    model = Curso
-    template_name = "curso_detail.html"
-    context_object_name = "curso"
-
-
-class CursoCreate(CreateView):
-    model = Curso
-    Create = "curso_create.html"
-    context_object_name = "curso"
-    fields = ['nombre', 'camada']
-    success_url = '/app-coder/lista-cursos'
-    
-
-class CursoUpdate(UpdateView):
-    model = Curso
-    template_name = "curso_update.html"
-    form_class = CursoFormulario
-    success_url = '/app-coder/listaCursos'
-    context_object_name = "curso"
-    
-
-class CursoDelete(DeleteView):
-    model = Curso
-    template_name = "curso_delete.html"
-    success_url = '/app-coder/lista-cursos'
-    
-    
-def entregables(req):
-    return render(req, 'entregables.html')  
-    return HttpResponse("Vista de Entregables")
 
 def loginView(req):
     
@@ -417,7 +251,12 @@ def listar_inmuebles(request):
     return render(request, 'lista_inmuebles.html', {'lista_inmuebles': lista_inmuebles})
 
 
-from django.shortcuts import render
+
 
 def acerca_de_mi(request):
     return render(request, 'acercademi.html')
+
+
+
+def mostrar_links(request):
+    return render(request, 'links.html')  # Asegúrate de que la ruta a tu archivo HTML sea correcta
